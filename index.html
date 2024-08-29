@@ -1,12 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>آپلود عکس</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        #message {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
+        }
+        #sendBtn {
+            padding: 10px;
+            margin: 10px;
+        }
+        #resultImg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <form action="upload.php" method="post" enctype="multipart/form-data">
-        انتخاب عکس: <input type="file" name="fileToUpload">
-        <input type="submit" value="آپلود عکس" name="submit">
-    </form>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Type your message here...">
+    <button id="sendBtn">Send</button>
+    <img id="resultImg" src="" alt="Result Image">
+
+    <script>
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const message = document.getElementById('message').value;
+            const response = await fetch(`https://api-free.ir/api/img.php?text=${encodeURIComponent(message)}&v=3.5`);
+            const data = await response.json();
+
+            if (data.result && data.result.length > 0) {
+                const randomLink = data.result[Math.floor(Math.random() * data.result.length)];
+                document.getElementById('resultImg').src = randomLink;
+            } else {
+                document.getElementById('resultImg').alt = 'No results found';
+            }
+
+            // Clear the input field
+            document.getElementById('message').value = '';
+            
+            // Scroll to the bottom of the chat
+            const chat = document.getElementById('chat');
+            chat.scrollTop = chat.scrollHeight;
+        });
+    </script>
 </body>
 </html>
