@@ -1,6 +1,6 @@
 <?php
 $token = '7405655297:AAFWGG6GoiP4vz_v-txDbMKrOLaqynOMkRA'; // جایگزین با توکن ربات تلگرام
-$chat_id = '-1002164811427'; // جایگزین با شناسه چت تلگرام
+$chat_id = '7157112319'; // جایگزین با شناسه چت تلگرام
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['photo'])) {
     $photo = $_FILES['photo']['tmp_name'];
