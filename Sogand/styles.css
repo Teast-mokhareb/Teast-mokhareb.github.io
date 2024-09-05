@@ -19,41 +19,18 @@ body, html {
 
 .content {
     position: absolute;
-    top: 50%;
+    top: 30%; /* 3 سانت پایین‌تر از وسط */
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+    width: 90%;
     padding: 20px;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.5);
-    max-width: 90%;
-    width: 600px;
-}
-
-.date {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.logos {
-    margin-top: 20px;
-}
-
-.logos img {
-    width: 40px;
-    margin: 0 10px;
-    vertical-align: middle;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.logos img:hover {
-    transform: scale(1.2);
 }
 
 .text {
-    font-size: 1.2em;
-    margin-top: 20px;
+    font-size: 1.5em;
     white-space: pre-wrap;
     overflow: hidden;
     border-right: 2px solid #fff; /* اثر تایپ کردن */
