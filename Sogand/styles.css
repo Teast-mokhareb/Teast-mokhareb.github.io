@@ -19,7 +19,7 @@ body, html {
 
 .content {
     position: absolute;
-    top: calc(45% + 6cm); /* 6 سانت پایین‌تر از وسط */
+    top: calc(0% + 8cm); /* 6 سانت پایین‌تر از وسط */
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
