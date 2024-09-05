@@ -1,0 +1,70 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Your Custom Font', sans-serif; /* فونت دلخواه خود را اینجا اضافه کنید */
+    color: #fff;
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    max-width: 90%;
+    width: 600px;
+}
+
+.date {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.logos {
+    margin-top: 20px;
+}
+
+.logos img {
+    width: 40px;
+    margin: 0 10px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.logos img:hover {
+    transform: scale(1.2);
+}
+
+.text {
+    font-size: 1.2em;
+    margin-top: 20px;
+    white-space: pre-wrap;
+    overflow: hidden;
+    border-right: 2px solid #fff; /* اثر تایپ کردن */
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: #fff;
+    }
+}
