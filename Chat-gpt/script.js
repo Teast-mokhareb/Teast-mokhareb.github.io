@@ -17,8 +17,16 @@ function sendMessage() {
     // Send request to API
     const url = `http://api.api-code.ir/api/ai-chatbot/?text=${encodeURIComponent(userMessage)}`;
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            if (!data.result) {
+                throw new Error('Unexpected response format');
+            }
             const botMessage = data.result;
 
             // Append bot message
