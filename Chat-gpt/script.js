@@ -5,44 +5,44 @@ function sendMessage() {
 
     if (userMessage === '') return;
 
-    
+    // Append user message
     const userMessageElement = document.createElement('div');
     userMessageElement.className = 'message user';
     userMessageElement.innerHTML = `<p>${userMessage}</p>`;
     chatBox.appendChild(userMessageElement);
 
-    
+    // Clear input field
     inputField.value = '';
 
-    
-    const url = `http://api.api-code.ir/api/ai-chatbot/?text=${encodeURIComponent(userMessage)}`;
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (!data.result) {
-                throw new Error('Unexpected response format');
-            }
-            const botMessage = data.result;
+    // Send request to server
+    fetch('/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: userMessage })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const botMessage = data.result;
 
-            
-            const botMessageElement = document.createElement('div');
-            botMessageElement.className = 'message bot';
-            botMessageElement.innerHTML = `<p>${botMessage}</p>`;
-            chatBox.appendChild(botMessageElement);
+        // Append bot message
+        const botMessageElement = document.createElement('div');
+        botMessageElement.className = 'message bot';
+        botMessageElement.innerHTML = `<p>${botMessage}</p>`;
+        chatBox.appendChild(botMessageElement);
 
-            
-            chatBox.scrollTop = chatBox.scrollHeight;
-        })
-        .catch(error => {
-            const errorMessageElement = document.createElement('div');
-            errorMessageElement.className = 'message bot';
-            errorMessageElement.innerHTML = `<p>Error: ${error.message}</p>`;
-            chatBox.appendChild(errorMessageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .catch(error => {
+        const errorMessageElement = document.createElement('div');
+        errorMessageElement.className = 'message bot';
+        errorMessageElement.innerHTML = `<p>Error: ${error.message}</p>`;
+        chatBox.appendChild(errorMessageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
 }
