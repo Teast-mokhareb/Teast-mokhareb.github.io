@@ -1,48 +1,42 @@
-function sendMessage() {
-    const inputField = document.getElementById('userInput');
+document.getElementById('messageForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const messageInput = document.getElementById('messageInput');
     const chatBox = document.getElementById('chatBox');
-    const userMessage = inputField.value.trim();
 
-    if (userMessage === '') return;
+    const text = messageInput.value.trim();
 
-    // Append user message
-    const userMessageElement = document.createElement('div');
-    userMessageElement.className = 'message user';
-    userMessageElement.innerHTML = `<p>${userMessage}</p>`;
-    chatBox.appendChild(userMessageElement);
+    if (text === '') {
+        return;
+    }
 
-    // Clear input field
-    inputField.value = '';
+    // نمایش پیام کاربر
+    const userMessage = document.createElement('div');
+    userMessage.classList.add('message', 'user');
+    userMessage.innerHTML = `<p>${text}</p>`;
+    chatBox.appendChild(userMessage);
 
-    // Send request to server
-    fetch('/sendMessage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: userMessage })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const botMessage = data.result;
+    // پاک کردن ورودی
+    messageInput.value = '';
 
-        // Append bot message
-        const botMessageElement = document.createElement('div');
-        botMessageElement.className = 'message bot';
-        botMessageElement.innerHTML = `<p>${botMessage}</p>`;
-        chatBox.appendChild(botMessageElement);
+    // ارسال درخواست به سرور PHP
+    fetch(`gpt.php?text=${encodeURIComponent(text)}`)
+        .then(response => response.json())
+        .then(data => {
+            // نمایش پیام ربات
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('message', 'bot');
+            if (data.result) {
+                botMessage.innerHTML = `<p>${data.result}</p>`;
+            } else if (data.error) {
+                botMessage.innerHTML = `<p>${data.error}</p>`;
+            }
+            chatBox.appendChild(botMessage);
 
-        // Scroll to bottom
-        chatBox.scrollTop = chatBox.scrollHeight;
-    })
-    .catch(error => {
-        const errorMessageElement = document.createElement('div');
-        errorMessageElement.className = 'message bot';
-        errorMessageElement.innerHTML = `<p>Error: ${error.message}</p>`;
-        chatBox.appendChild(errorMessageElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
-}
+            // اسکرول به پایین
+            chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});
