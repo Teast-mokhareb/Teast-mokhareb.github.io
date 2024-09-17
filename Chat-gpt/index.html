@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <style>
-        .message { margin: 10px; padding: 10px; border-radius: 5px; }
-        .user { background-color: #d0f0c0; }
-        .bot { background-color: #f0d0c0; }
-        #chatBox { max-height: 400px; overflow-y: auto; }
-    </style>
+    <title>پیام‌رسان ساده</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="chatBox"></div>
-    <input id="userInput" type="text" placeholder="Type a message...">
-    <button onclick="sendMessage()">Send</button>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox"></div>
+        <form id="messageForm" class="message-form">
+            <textarea id="messageInput" placeholder="پیام خود را وارد کنید..." rows="3"></textarea>
+            <button type="submit">ارسال</button>
+        </form>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
